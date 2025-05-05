@@ -1,0 +1,9 @@
+{
+    "1": {
+        "id": 1,
+        "nombre": "Lechera",
+        "precio": 21.0,
+        "stock": 25,
+        "categoria": "Lacteos"
+    }
+}
