@@ -5,5 +5,54 @@
         "precio": 21.0,
         "stock": 25,
         "categoria": "Lacteos"
+    },
+    "3": {
+        "id": 3,
+        "nombre": "Laptop HP Core I3 12 Ram 512 SSD",
+        "precio": 12000.0,
+        "stock": 28,
+        "categoria": "Electrónica"
+    },
+    "4": {
+        "id": 4,
+        "nombre": "Iphone 15",
+        "precio": 20000.0,
+        "stock": 9,
+        "categoria": "Electrónica"
+    },
+    "5": {
+        "id": 5,
+        "nombre": "Jabonzote",
+        "precio": 15.0,
+        "stock": 30,
+        "categoria": "Higiene"
+    },
+    "6": {
+        "id": 6,
+        "nombre": "Pasta Dental Colgate 500 ml",
+        "precio": 34.0,
+        "stock": 21,
+        "categoria": "Higiene"
+    },
+    "7": {
+        "id": 7,
+        "nombre": "Horno MIcroondas",
+        "precio": 3500.0,
+        "stock": 11,
+        "categoria": "Electrodomésticos"
+    },
+    "8": {
+        "id": 8,
+        "nombre": "Licuadora",
+        "precio": 340.0,
+        "stock": 20,
+        "categoria": "Electrodomésticos"
+    },
+    "9": {
+        "id": 9,
+        "nombre": "Chocolate ",
+        "precio": 12.0,
+        "stock": 13,
+        "categoria": "Alimentos"
     }
 }

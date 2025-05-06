@@ -238,8 +238,19 @@ def iniciar_servidor_sin_ns():
     Inicia el servidor en modo independiente sin usar el Name Server.
     """
     try:
+        """PARA IP
+        # # Crear el daemon en la dirección y puerto específicos
+        # daemon = Pyro4.Daemon(host=HOST_SERVIDOR, port=PUERTO_SERVIDOR)"""
+        
+        """PARA HAMACHI
+        # Modificar la configuración para permitir conexiones remotas a través de Hamachi"""
+        Pyro4.config.SERVERTYPE = "multiplex"
+        Pyro4.config.SOCK_REUSE = True
+        
         # Crear el daemon en la dirección y puerto específicos
+        # Usando la IP de Hamachi del servidor
         daemon = Pyro4.Daemon(host=HOST_SERVIDOR, port=PUERTO_SERVIDOR)
+        
         
         # Registrar el objeto en el daemon con un nombre específico
         uri = daemon.register(ServidorInventario(), objectId=NOMBRE_SERVIDOR)
@@ -261,8 +272,11 @@ if __name__ == "__main__":
     Pyro4.config.SERIALIZER = "pickle"
     Pyro4.config.SERIALIZERS_ACCEPTED.add("pickle")
     
-    # Deshabilitar la necesidad de clave HMAC para desarrollo local
+    #  Deshabilitar la necesidad de clave HMAC para desarrollo local
     Pyro4.config.REQUIRE_EXPOSE = False
+    
+    """ PARA VPN: Configuraciones adicionales para mejorar la conexión remota """ 
+    Pyro4.config.COMMTIMEOUT = 15.0  # Aumentar tiempo de espera para conexiones lentas
     
     # Iniciar directamente en modo independiente sin intentar usar el Name Server
     print("Iniciando servidor en modo independiente...")
