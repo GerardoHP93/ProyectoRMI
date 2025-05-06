@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 Punto de entrada principal para el cliente del sistema de inventario.
 """

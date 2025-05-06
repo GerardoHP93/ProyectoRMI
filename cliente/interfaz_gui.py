@@ -1,12 +1,23 @@
 """
 Interfaz gráfica de usuario para el cliente de inventario.
 """
+import os
+os.environ['TCL_LIBRARY'] = r"C:\Users\Gerardo Herrera\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
+
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 import threading
 import time
 
 from cliente.cliente import obtener_cliente
+
+# Intenta establecer la ruta correcta para TCL
+tcl_lib = r"C:\Users\Gerardo Herrera\AppData\Local\Programs\Python\Python313\tcl"  # Ajusta esta ruta
+if os.path.exists(tcl_lib):
+    os.environ["TCL_LIBRARY"] = tcl_lib
+    os.environ["TK_LIBRARY"] = os.path.join(os.path.dirname(tcl_lib), "tk")
+
+import tkinter as tk
 
 class InterfazGUI:
     """

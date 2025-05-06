@@ -1,9 +1,36 @@
-#!/usr/bin/env python
 """
 Punto de entrada principal para la interfaz gráfica del sistema de inventario.
 """
 import sys
 from cliente.interfaz_gui import main as iniciar_gui
+
+import os
+import sys
+import tkinter as tk
+
+# Imprimir información de diagnóstico
+print("Python version:", sys.version)
+print("Tkinter version:", tk.TkVersion)
+print("TCL_LIBRARY:", os.environ.get("TCL_LIBRARY", "Not set"))
+print("TK_LIBRARY:", os.environ.get("TK_LIBRARY", "Not set"))
+print("Tkinter executable:", tk.__file__)
+
+
+# Buscar archivos TCL en ubicaciones alternativas
+tcl_lib_paths = [
+    r"C:\Users\Gerardo Herrera\AppData\Local\Programs\Python\Python313\tcl\tcl8.6",
+    r"C:\Users\Gerardo Herrera\AppData\Local\Programs\Python\Python313\Lib\tcl8.6",
+    r"C:\Program Files\Tcl\lib\tcl8.6"
+]
+
+for path in tcl_lib_paths:
+    if os.path.exists(path) and os.path.exists(os.path.join(path, "init.tcl")):
+        os.environ["TCL_LIBRARY"] = path
+        tk_path = path.replace("tcl8.6", "tk8.6")
+        if os.path.exists(tk_path):
+            os.environ["TK_LIBRARY"] = tk_path
+        break
+
 
 def main():
     """
