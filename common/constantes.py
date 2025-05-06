@@ -6,14 +6,14 @@ Constantes y configuraciones compartidas entre el cliente y el servidor.
 NOMBRE_SERVIDOR = "inventario.servidor"
 
 # Host y puerto por defecto para el servidor Pyro
-HOST_SERVIDOR = "localhost"
+HOST_SERVIDOR = "0.0.0.0"  # Permite conexiones desde cualquier IP
 PUERTO_SERVIDOR = 9090
 
 # Ruta para el archivo de persistencia del inventario
 RUTA_DATOS = "servidor/datos/inventario.json"
 
 # Configuración del Name Server de Pyro
-NS_HOST = "localhost"
+NS_HOST = "0.0.0.0"  # Cambiado de "localhost" para permitir conexiones remotas
 NS_PORT = 9090
 
 # Mensajes de estado

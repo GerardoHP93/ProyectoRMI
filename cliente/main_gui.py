@@ -38,9 +38,19 @@ def main():
     """
     print("Iniciando interfaz gráfica del sistema de inventario...")
     
+    # Preguntar por la IP del servidor
+    print("\n=== Configuración de conexión ===")
+    print("1. Conectar a servidor local")
+    print("2. Conectar a servidor remoto")
+    opcion = input("Seleccione una opción: ")
+    
+    host_ip = None
+    if opcion == "2":
+        host_ip = input("Ingrese la dirección IP del servidor: ")
+    
     try:
         # Iniciar la interfaz gráfica
-        iniciar_gui()
+        iniciar_gui(host_ip)
     except KeyboardInterrupt:
         print("\nProceso interrumpido por el usuario.")
         sys.exit(0)

@@ -11,8 +11,18 @@ def main():
     print("Iniciando cliente del sistema de inventario...")
     
     try:
-        # Crear y ejecutar la interfaz CLI
-        interfaz = InterfazCLI()
+        # Preguntar por la IP del servidor
+        print("\n=== Configuración de conexión ===")
+        print("1. Conectar a servidor local")
+        print("2. Conectar a servidor remoto")
+        opcion = input("Seleccione una opción: ")
+        
+        host_ip = None
+        if opcion == "2":
+            host_ip = input("Ingrese la dirección IP del servidor: ")
+        
+        # Crear y ejecutar la interfaz CLI con la IP proporcionada
+        interfaz = InterfazCLI(host_ip)
         interfaz.ejecutar()
     except KeyboardInterrupt:
         print("\nProceso interrumpido por el usuario.")

@@ -24,14 +24,16 @@ class InterfazGUI:
     Interfaz gráfica para interactuar con el servidor de inventario.
     """
     
-    def __init__(self, root):
+    def __init__(self, root, host_ip=None):
         """
         Inicializa la interfaz gráfica.
         
         Args:
             root: Ventana principal de Tkinter.
+            host_ip (str, optional): Dirección IP del servidor
         """
         self.root = root
+        self.host_ip = host_ip
         self.root.title("Sistema de Gestión de Inventario")
         self.root.geometry("1000x600")
         self.root.minsize(800, 500)
@@ -304,7 +306,7 @@ class InterfazGUI:
         """
         Conecta con el servidor en un hilo separado.
         """
-        self.cliente = obtener_cliente()
+        self.cliente = obtener_cliente(self.host_ip)
         self.conectando = False
         
         # Actualizar la interfaz en el hilo principal
@@ -1008,13 +1010,17 @@ class InterfazGUI:
             command=vender_window.destroy
         ).pack(side=tk.RIGHT, padx=5)
 
+# Al final del archivo cliente/interfaz_gui.py, fuera de la clase InterfazGUI
 
-def main():
+def main(host_ip=None):
     """
     Función principal para iniciar la interfaz gráfica.
+    
+    Args:
+        host_ip (str, optional): Dirección IP del servidor
     """
     root = tk.Tk()
-    app = InterfazGUI(root)
+    app = InterfazGUI(root, host_ip)
     root.mainloop()
 
 

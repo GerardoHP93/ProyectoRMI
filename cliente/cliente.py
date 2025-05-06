@@ -77,6 +77,36 @@ class ClienteInventario:
             print(f"Error al conectar directamente con el servidor: {e}")
             return False
     
+    def conectar_ip_especifica(self, host_servidor):
+        """
+        Intenta conectar directamente con el servidor usando una IP específica.
+        
+        Args:
+            host_servidor (str): Dirección IP o hostname del servidor
+            
+        Returns:
+            bool: True si la conexión fue exitosa, False en caso contrario.
+        """
+        try:
+            # Construir la URI manualmente
+            uri = f"PYRO:{NOMBRE_SERVIDOR}@{host_servidor}:{PUERTO_SERVIDOR}"
+            
+            print(f"Intentando conexión a {uri}...")
+            
+            # Conectar con el servidor
+            self.servidor = Pyro4.Proxy(uri)
+            
+            # Verificar la conexión con un timeout más corto
+            self.servidor._pyroTimeout = 5  # 5 segundos de timeout
+            self.servidor._pyroBind()
+            
+            print(f"Conectado directamente al servidor: {uri}")
+            return True
+        
+        except Exception as e:
+            print(f"Error al conectar con el servidor: {e}")
+            return False
+    
     def conectar(self):
         """
         Intenta conectar con el servidor utilizando diferentes métodos.
@@ -217,9 +247,13 @@ class ClienteInventario:
 
 
 # Función para crear una instancia del cliente y conectarla
-def obtener_cliente():
+def obtener_cliente(host_ip=None):
     """
     Crea y conecta un cliente al servidor.
+    
+    Args:
+        host_ip (str, optional): Dirección IP del servidor. Si es None,
+                                se intentará conexión local.
     
     Returns:
         ClienteInventario: Cliente conectado o None si falla la conexión.
@@ -233,13 +267,18 @@ def obtener_cliente():
     
     cliente = ClienteInventario()
     
-    # Intentar la conexión directa sin usar el Name Server
-    if cliente.conectar_directo():
-        return cliente
+    # Si se proporcionó una IP específica, intentar conexión directa
+    if host_ip:
+        if cliente.conectar_ip_especifica(host_ip):
+            return cliente
     else:
-        print("No se pudo conectar con el servidor de inventario.")
-        print("Asegúrate de que el servidor esté en ejecución.")
-        return None
+        # Intentar la conexión directa sin usar el Name Server
+        if cliente.conectar_directo():
+            return cliente
+    
+    print("No se pudo conectar con el servidor de inventario.")
+    print("Asegúrate de que el servidor esté en ejecución.")
+    return None
 
 
 if __name__ == "__main__":

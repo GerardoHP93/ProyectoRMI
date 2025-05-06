@@ -10,11 +10,14 @@ class InterfazCLI:
     Interfaz de línea de comandos para interactuar con el servidor de inventario.
     """
     
-    def __init__(self):
+    def __init__(self, host_ip=None):
         """
         Inicializa la interfaz de línea de comandos.
+        
+        Args:
+            host_ip (str, optional): Dirección IP del servidor
         """
-        self.cliente = obtener_cliente()
+        self.cliente = obtener_cliente(host_ip)
         
         if not self.cliente:
             print("No se pudo inicializar el cliente. Saliendo...")
