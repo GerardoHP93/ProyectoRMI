@@ -570,6 +570,169 @@ class InterfazGUI:
         ttk.Separator(form_frame, orient='horizontal').pack(fill=tk.X, pady=15)
         
         # Función para validar y guardar
+        def guardar_producto():
+            try:
+                # Validar campos
+                id_str = id_var.get().strip()
+                nombre = nombre_var.get().strip()
+                precio_str = precio_var.get().strip()
+                stock_str = stock_var.get().strip()
+                categoria = categoria_var.get().strip()
+                
+                # Verificar campos obligatorios
+                if not id_str or not nombre or not precio_str or not stock_str:
+                    messagebox.showerror("Error", "Todos los campos son obligatorios.")
+                    return
+                
+                # Convertir tipos
+                try:
+                    id_producto = int(id_str)
+                    precio = float(precio_str)
+                    stock = int(stock_str)
+                except ValueError:
+                    messagebox.showerror("Error", "Formato de datos incorrecto. Verifica los valores ingresados.")
+                    return
+                
+                # Validar valores
+                if precio <= 0:
+                    messagebox.showerror("Error", "El precio debe ser mayor que cero.")
+                    return
+                
+                if stock < 0:
+                    messagebox.showerror("Error", "El stock no puede ser negativo.")
+                    return
+                
+                # Enviar datos al servidor
+                resultado = self.cliente.agregar_producto(
+                    id_producto, nombre, precio, stock, categoria
+                )
+                
+                if resultado["exito"]:
+                    messagebox.showinfo("Éxito", resultado["mensaje"])
+                    agregar_window.destroy()
+                    self.cargar_productos()
+                else:
+                    messagebox.showerror("Error", resultado["mensaje"])
+            
+            except Exception as e:
+                messagebox.showerror("Error", f"Error al agregar producto: {str(e)}")
+        
+        # Botones
+        button_frame = ttk.Frame(form_frame)
+        button_frame.pack(fill=tk.X, pady=(10, 0))
+        
+        ttk.Button(
+            button_frame, 
+            text="Guardar",
+            command=guardar_producto
+        ).pack(side=tk.LEFT, padx=5)
+        
+        ttk.Button(
+            button_frame, 
+            text="Cancelar",
+            command=agregar_window.destroy
+        ).pack(side=tk.RIGHT, padx=5)
+    
+    def abrir_modificar_producto(self, id_producto=None):
+        """
+        Abre la ventana para modificar un producto existente.
+        
+        Args:
+            id_producto (int, optional): ID del producto a modificar. Si es None,
+                                         se utilizará el seleccionado en la tabla.
+        """
+        if id_producto is None:
+            # Obtener el ítem seleccionado
+            seleccion = self.tree.selection()
+            if not seleccion:
+                messagebox.showwarning("Advertencia", "Por favor, seleccione un producto para modificar.")
+                return
+            
+            item = self.tree.item(seleccion[0])
+            id_producto = int(item["values"][0])
+        
+        # Obtener datos del producto
+        resultado = self.cliente.obtener_producto(id_producto)
+        
+        if not resultado["exito"]:
+            messagebox.showerror("Error", resultado["mensaje"])
+            return
+        
+        producto = resultado["producto"]
+        
+        # Crear ventana de modificación
+        modificar_window = tk.Toplevel(self.root)
+        modificar_window.title(f"Modificar Producto: {producto['nombre']}")
+        modificar_window.geometry("400x350")
+        modificar_window.resizable(False, False)
+        modificar_window.transient(self.root)
+        modificar_window.grab_set()
+        
+        # Centrar en la pantalla
+        modificar_window.update_idletasks()
+        width = modificar_window.winfo_width()
+        height = modificar_window.winfo_height()
+        x = (modificar_window.winfo_screenwidth() // 2) - (width // 2)
+        y = (modificar_window.winfo_screenheight() // 2) - (height // 2)
+        modificar_window.geometry('{}x{}+{}+{}'.format(width, height, x, y))
+        
+        # Contenido
+        form_frame = ttk.Frame(modificar_window)
+        form_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
+        
+        # Título
+        ttk.Label(
+            form_frame, 
+            text=f"Modificar Producto: {producto['nombre']}",
+            font=("Arial", 14, "bold")
+        ).pack(anchor=tk.W, pady=(0, 15))
+        
+        # Variables
+        nombre_var = tk.StringVar(value=producto["nombre"])
+        precio_var = tk.StringVar(value=str(producto["precio"]))
+        stock_var = tk.StringVar(value=str(producto["stock"]))
+        categoria_var = tk.StringVar(value=producto["categoria"])
+        
+        # Formulario
+        # Nombre
+        nombre_frame = ttk.Frame(form_frame)
+        nombre_frame.pack(fill=tk.X, pady=5)
+        ttk.Label(nombre_frame, text="Nombre:", width=10).pack(side=tk.LEFT)
+        ttk.Entry(nombre_frame, textvariable=nombre_var).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        
+        # Precio
+        precio_frame = ttk.Frame(form_frame)
+        precio_frame.pack(fill=tk.X, pady=5)
+        ttk.Label(precio_frame, text="Precio:", width=10).pack(side=tk.LEFT)
+        ttk.Entry(precio_frame, textvariable=precio_var).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        
+        # Stock
+        stock_frame = ttk.Frame(form_frame)
+        stock_frame.pack(fill=tk.X, pady=5)
+        ttk.Label(stock_frame, text="Stock:", width=10).pack(side=tk.LEFT)
+        ttk.Entry(stock_frame, textvariable=stock_var).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        
+        # Categoría
+        categoria_frame = ttk.Frame(form_frame)
+        categoria_frame.pack(fill=tk.X, pady=5)
+        ttk.Label(categoria_frame, text="Categoría:", width=10).pack(side=tk.LEFT)
+        
+# Si hay categorías disponibles (excepto "Todas"), mostrarlas en el combobox
+        categorias_unicas = [cat for cat in self.categorias if cat != "Todas"]
+        if categorias_unicas:
+            categoria_combobox = ttk.Combobox(
+                categoria_frame, 
+                textvariable=categoria_var,
+                values=categorias_unicas
+            )
+            categoria_combobox.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        else:
+            ttk.Entry(categoria_frame, textvariable=categoria_var).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        
+        # Separador
+        ttk.Separator(form_frame, orient='horizontal').pack(fill=tk.X, pady=15)
+        
+        # Función para validar y guardar
         def guardar_modificaciones():
             try:
                 # Validar campos
@@ -843,3 +1006,6 @@ def main():
     app = InterfazGUI(root)
     root.mainloop()
 
+
+if __name__ == "__main__":
+    main()
